@@ -18,8 +18,12 @@ const profileDescription = document.getElementById('profile-description');
 // CONTACTS
 const contactsList = document.getElementById('contacts-list');
 const searchContactsForm = document.getElementById('contacts-search-form');
-const btnAddContact = document.getElementById('btn-add-contact');
+// const btnAddContact = document.getElementById('btn-add-contact');
 const addContactForm = document.getElementById('add-contact-form');
+
+//TASK LIST
+const taskList = document.getElementById('task-list');
+const addTaskForm = document.getElementById('add-task-form');
 
 // SETTINGS
 const btnClearStore = document.getElementById('btn-clear-store');
@@ -35,6 +39,11 @@ let contacts = [
     { name: "Стив Джобс", mobile: "8979873498732" },
     { name: "Стив Возняк", mobile: "3675423475" },
     { name: "Балмер", mobile: "765467253467" }
+];
+
+let tasks = [
+    { body: "Обязательно что-нибудь сделать. Хорошее"},
+    { body: "Написать список задач" }
 ];
 
 function createContactItem(contact) {
@@ -57,6 +66,39 @@ function renderContacts(contacts) {
     }
 }
 
+function createTaskItem(task) {
+    return `
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between">
+            <div class="col-10">
+                ${task.body}
+            </div>
+            <div class="col-1">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+            </svg>
+            </div>
+            <div class="col-1">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check2-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M15.354 2.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L8 9.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    <path fill-rule="evenodd" d="M1.5 13A1.5 1.5 0 0 0 3 14.5h10a1.5 1.5 0 0 0 1.5-1.5V8a.5.5 0 0 0-1 0v5a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V3a.5.5 0 0 1 .5-.5h8a.5.5 0 0 0 0-1H3A1.5 1.5 0 0 0 1.5 3v10z"/>
+                </svg>
+            </div>
+        </li>
+    </ul>
+    `
+}
+
+function renderTasks(tasks) {
+    taskList.innerHTML = '';
+
+    for(let i = 0; i < tasks.length; i++) {
+        const currentTask = tasks[i];
+        taskList.innerHTML += createTaskItem(currentTask);
+    }
+}
+
 function changeNavbarContent(value) {
     navbaContent.innerText = value;
 }
@@ -71,11 +113,12 @@ function initialApp() {
     const savedDescription = localStorage.getItem('description');
     const savedContacts = localStorage.getItem('contacts');
     const savedTheme = localStorage.getItem('theme');
+    const savedTasks = localStorage.getItem('tasks');
 
     if (savedTheme === 'dark') {
-        document.body.classList.add('theme-dark');
-        switchTheme.classList.add('switch-active');
-        switchTheme.setAttribute('data-checked', "1");
+        document.body.classList.add('theme-dark');  //for css changing
+        switchTheme.classList.add('switch-active');  //for switcher position
+        switchTheme.setAttribute('data-checked', "1");  
     }
 
     // Проверка на сохранённые имя и описание
@@ -92,16 +135,21 @@ function initialApp() {
         contacts = JSON.parse(savedContacts);
     }
 
+    if(savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+
     profilePage.style.display = "none";
-    settingsPage.style.display = "block";
-    listPage.style.display = "none";
+    settingsPage.style.display = "none";
+    listPage.style.display = "block";
     contactsPage.style.display = "none";
 
     profileForm.style.display = "none";
 
-    changeNavbarContent('Настройки');
+    changeNavbarContent('Список дел');
     changeProfileContent(user.name, user.description);
     renderContacts(contacts);
+    renderTasks(tasks);
 
     profileForm['name'].value = user.name;
     profileForm['description'].value = user.description;
@@ -117,8 +165,8 @@ function menuBtnsBindEvent() {
             const pageName = btn.getAttribute('data-pagename');
             const path = btn.getAttribute('data-path');
 
-            changeNavbarContent(pageName);
-            switchPage(path);
+            changeNavbarContent(pageName);  // changing page name in navbar
+            switchPage(path);  // changing page content
         })
     }
 }
@@ -155,6 +203,7 @@ function switchPage(activePage) {
     }
 }
 
+// changing card profile data
 function switchProfileForm(showProfileForm) {
     if (showProfileForm) {
         profileForm.style.display = 'block';
@@ -176,7 +225,7 @@ btnRedactProfile.addEventListener('click', function() {
 profileForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Сохраняем изменные данные
+    // Сохраняем измененные данные
     // F12 -> Application -> storage
     localStorage.setItem('name', profileForm['name'].value);
     localStorage.setItem('description', profileForm['description'].value);
@@ -213,6 +262,20 @@ addContactForm.addEventListener('submit', function(event) {
         addContactForm['mobile'].value = '';
     }
 
+})
+
+addTaskForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const body = addTaskForm['body'].value;
+
+    if (body.length) {
+        tasks.unshift({ body });
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTasks(tasks);
+
+        addTaskForm['body'].value = '';
+    }
 })
 
 btnClearStore.addEventListener('click', function() {
