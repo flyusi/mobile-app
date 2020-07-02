@@ -28,6 +28,8 @@ const allTasks = document.querySelector('#tast-list');
 
 // SETTINGS
 const btnClearStore = document.getElementById('btn-clear-store');
+const btnClearTasks = document.getElementById('btn-clear-tasks');
+const btnClearContacts = document.getElementById('btn-clear-contacts')
 const switchTheme = document.getElementById('switch-theme');
 
 // INITIAL OBJECTS
@@ -73,12 +75,7 @@ function getTaskId() {
 
 function createTaskItem(task) {
     // console.log(task);
-    let c = ""
-    if(task.completed === true) {
-        c = "checked";
-        console.log('checked');
-    }
-
+    let c = "";
     let taskItem = `
         <li class="list-group-item d-flex justify-content-between" id="${task.taskId}">
             <div class="col-9 one-task ${c}">
@@ -303,11 +300,33 @@ addTaskForm.addEventListener('submit', function(event) {
 
 btnClearStore.addEventListener('click', function() {
     if (localStorage.length > 0) {
-        const userAnswer = confirm('Вы уверены что хотите очистить localstorage?');
+        const userAnswer = confirm('Вы уверены что хотите очистить localstorage? 👀');
     
         if (userAnswer) {
             localStorage.clear();
         }
+    }
+})
+
+btnClearTasks.addEventListener('click', function() {
+    if (localStorage.getItem('tasks')) {
+        const userAnswer = confirm('Начнем список дел заново? 🤔');
+
+        if(userAnswer) {
+            localStorage.removeItem('tasks');
+        }
+        taskList.innerHTML = '';
+    }
+})
+
+btnClearContacts.addEventListener('click', function() {
+    if (localStorage.getItem('contacts')) {
+        const userAnswer = confirm('Убираем ВСЕ контакты из списка? 😱');
+
+        if(userAnswer) {
+            localStorage.removeItem('contacts');
+        }
+        contactsList.innerHTML = '';
     }
 })
 
@@ -358,6 +377,7 @@ function initialApp() {
     
     changeNavbarContent('Список дел');
     switchPage('list');
+    switchProfileForm(false);
 
     changeProfileContent(user.name, user.description);
     renderContacts(contacts);
