@@ -24,10 +24,12 @@ const addContactForm = document.getElementById('add-contact-form');
 //TASK LIST
 const taskList = document.getElementById('task-list');
 const addTaskForm = document.getElementById('add-task-form');
-let allTasks = document.getElementsByClassName('one-task');
+const allTasks = document.querySelector('#tast-list');
 
 // SETTINGS
 const btnClearStore = document.getElementById('btn-clear-store');
+const btnClearTasks = document.getElementById('btn-clear-tasks');
+const btnClearContacts = document.getElementById('btn-clear-contacts')
 const switchTheme = document.getElementById('switch-theme');
 
 // INITIAL OBJECTS
@@ -37,14 +39,14 @@ const user = {
 }
 
 let contacts = [
-    { name: "Стив Джобс", mobile: "8979873498732" },
-    { name: "Стив Возняк", mobile: "3675423475" },
-    { name: "Балмер", mobile: "765467253467" }
+    {name: "Стив Джобс", mobile: "8979873498732"},
+    {name: "Стив Возняк", mobile: "3675423475"},
+    {name: "Балмер", mobile: "765467253467"}
 ];
 
 let tasks = [
-    { body: "Обязательно что-нибудь сделать. Хорошее"},
-    { body: "Написать список задач" }
+    {body: "Обязательно что-нибудь сделать. Хорошее", completed: false, taskId: "1"},
+    {body: "Написать список задач", completed: true, taskId: "2"}
 ];
 
 function createContactItem(contact) {
@@ -67,32 +69,34 @@ function renderContacts(contacts) {
     }
 }
 
-// function getTaskId() {
-//     return Math.random().toString(36).substr(2, 16);
-// }
+function getTaskId() {
+    return Math.random().toString(36).substr(2, 16);
+}
 
 function createTaskItem(task) {
-    return `
-    
-        <li class="list-group-item d-flex justify-content-between one-task">
-            <div class="col-10">
+    // console.log(task);
+    let c = "";
+    let taskItem = `
+        <li class="list-group-item d-flex justify-content-between" id="${task.taskId}">
+            <div class="col-9 one-task ${c}">
                 ${task.body}
-            </div>
-            <div class="col-1 change">
+            </div> 
+            <button class="btn edit" action="edit" id="${task.taskId}">
                 <svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                     <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                 </svg>
-            </div>
-            <div class="col-1 delete">
-                <svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </button>
+            <button class="btn delete" action="delete" id="${task.taskId}">
+                <svg width="1.3em" height="1.3em" viewBox="0 0 16 16" class="bi bi-x-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                    <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
+                    <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
                 </svg>
-            </div>
+            </button>
         </li>
-    
     `
+    return taskItem;
 }
 
 function renderTasks(tasks) {
@@ -104,6 +108,46 @@ function renderTasks(tasks) {
     }
 }
 
+// deleting (and todo: editing) tasks
+taskList.addEventListener('click', (event) => {
+    const element = event.target; // to know where user clicked on
+    const elementAction = element.parentNode.attributes.action;  // to know if elem has an action
+    const elementId = element.parentNode.attributes.id;  // ...if elem has an id
+    const tasks = getFromLocalStorage('tasks');
+
+    if(element.classList[1] === 'one-task' ) {
+        console.log('it is a task!');
+        element.parentNode.querySelector(".one-task").classList.toggle('checked');
+
+        // saving changes to local storage
+        tasks.forEach((task) => {
+            if(task.taskId === elementId.value) {
+                task.completed = task.completed ? false : true; 
+            }
+        });
+    }
+    
+    if(elementAction) {
+        console.log(element.parentNode.attributes.id);
+        
+        if(elementAction.value === "delete") {
+            element.parentNode.parentNode.parentNode.removeChild(element.parentNode.parentNode);
+
+            // need to delete from local storage
+            tasks.forEach((task,index) => {
+                if(task.taskId === elementId.value) {
+                    tasks.splice(index, 1);
+                }
+            });
+        } else if(elementAction.value === 'edit'){
+            console.log('lets edit...');
+        }
+        
+         
+    }
+    saveToLocalStorage('tasks', tasks);
+})
+
 function changeNavbarContent(value) {
     navbaContent.innerText = value;
 }
@@ -113,55 +157,21 @@ function changeProfileContent(name, description) {
     profileDescription.innerText = description;
 }
 
-function initialApp() {
-    const savedName = localStorage.getItem('name');
-    const savedDescription = localStorage.getItem('description');
-    const savedContacts = localStorage.getItem('contacts');
-    const savedTheme = localStorage.getItem('theme');
-    const savedTasks = localStorage.getItem('tasks');
-
-    if (savedTheme === 'dark') {
-        document.body.classList.add('theme-dark');  //for css changing
-        switchTheme.classList.add('switch-active');  //for switcher position
-        switchTheme.setAttribute('data-checked', "1");  
+function getFromLocalStorage(key) {
+    let list;
+    if(localStorage.getItem(key) === null) {
+        list = [];
+    }else{
+        list = JSON.parse(localStorage.getItem(key));
     }
-
-    // Проверка на сохранённые имя и описание
-    if (savedName) {
-        user.name = savedName;
-    }
-
-    if (savedDescription) {
-        user.description = savedDescription;
-    }
-
-    // Проверка сохраннённых контактов
-    if (savedContacts) {
-        contacts = JSON.parse(savedContacts);
-    }
-
-    if(savedTasks) {
-        tasks = JSON.parse(savedTasks);
-    }
-
-    profilePage.style.display = "none";
-    settingsPage.style.display = "none";
-    listPage.style.display = "block";
-    contactsPage.style.display = "none";
-
-    profileForm.style.display = "none";
-
-    changeNavbarContent('Список дел');
-    changeProfileContent(user.name, user.description);
-    renderContacts(contacts);
-    renderTasks(tasks);
-
-    profileForm['name'].value = user.name;
-    profileForm['description'].value = user.description;
+    return list;
 }
 
-initialApp();
+function saveToLocalStorage(itemWhere, itemWhat) {
+    localStorage.setItem(itemWhere, JSON.stringify(itemWhat));
+}
 
+// changing pages display
 function menuBtnsBindEvent() {
     for (let i = 0; i < menuBtns.length; i++) {
         const btn = menuBtns[i];
@@ -260,7 +270,7 @@ addContactForm.addEventListener('submit', function(event) {
     if (name.length && mobile.length) {
         // const contact = { name: name, mobile: mobile };
         contacts.unshift({ name, mobile });
-        localStorage.setItem('contacts', JSON.stringify(contacts));
+        saveToLocalStorage('contacts', contacts);
         renderContacts(contacts);
 
         addContactForm['name'].value = '';
@@ -269,14 +279,19 @@ addContactForm.addEventListener('submit', function(event) {
 
 })
 
+//add new task to list
 addTaskForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
     const body = addTaskForm['body'].value;
+    const completed = false;
+    const taskId = getTaskId();
 
     if (body.length) {
-        tasks.unshift({ body });
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+        addedTask = {body: body, completed: completed, taskId: taskId}
+        tasks.unshift({ body, completed, taskId });
+        console.log(addedTask);
+        saveToLocalStorage('tasks', tasks);
         renderTasks(tasks);
 
         addTaskForm['body'].value = '';
@@ -285,11 +300,33 @@ addTaskForm.addEventListener('submit', function(event) {
 
 btnClearStore.addEventListener('click', function() {
     if (localStorage.length > 0) {
-        const userAnswer = confirm('Вы уверены что хотите очистить localstorage?');
+        const userAnswer = confirm('Вы уверены что хотите очистить localstorage? 👀');
     
         if (userAnswer) {
             localStorage.clear();
         }
+    }
+})
+
+btnClearTasks.addEventListener('click', function() {
+    if (localStorage.getItem('tasks')) {
+        const userAnswer = confirm('Начнем список дел заново? 🤔');
+
+        if(userAnswer) {
+            localStorage.removeItem('tasks');
+        }
+        taskList.innerHTML = '';
+    }
+})
+
+btnClearContacts.addEventListener('click', function() {
+    if (localStorage.getItem('contacts')) {
+        const userAnswer = confirm('Убираем ВСЕ контакты из списка? 😱');
+
+        if(userAnswer) {
+            localStorage.removeItem('contacts');
+        }
+        contactsList.innerHTML = '';
     }
 })
 
@@ -307,4 +344,48 @@ switchTheme.addEventListener('click', function() {
     }
 })
 
+function initialApp() {
+    const savedName = localStorage.getItem('name');
+    const savedDescription = localStorage.getItem('description');
+    const savedContacts = localStorage.getItem('contacts');
+    const savedTheme = localStorage.getItem('theme');
+    const savedTasks = localStorage.getItem('tasks');
+
+    if (savedTheme === 'dark') {
+        document.body.classList.add('theme-dark');  //for css changing
+        switchTheme.classList.add('switch-active');  //for switcher position
+        switchTheme.setAttribute('data-checked', "1");  
+    }
+
+    // Проверка на сохранённые имя и описание
+    if (savedName) {
+        user.name = savedName;
+    }
+
+    if (savedDescription) {
+        user.description = savedDescription;
+    }
+
+    // Проверка сохраннённых контактов
+    if (savedContacts) {
+        contacts = JSON.parse(savedContacts);
+    }
+
+    if(savedTasks) {
+        tasks = JSON.parse(savedTasks);
+    }
+    
+    changeNavbarContent('Список дел');
+    switchPage('list');
+    switchProfileForm(false);
+
+    changeProfileContent(user.name, user.description);
+    renderContacts(contacts);
+    renderTasks(tasks);
+
+    profileForm['name'].value = user.name;
+    profileForm['description'].value = user.description;
+}
+
+initialApp();
 menuBtnsBindEvent();
