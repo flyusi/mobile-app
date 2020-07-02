@@ -24,6 +24,8 @@ const addContactForm = document.getElementById('add-contact-form');
 //TASK LIST
 const taskList = document.getElementById('task-list');
 const addTaskForm = document.getElementById('add-task-form');
+const modalEditTask = document.getElementById('modal-edit-task');
+const editTaskForm = document.getElementById('edit-task-form');
 const allTasks = document.querySelector('#tast-list');
 
 // SETTINGS
@@ -115,6 +117,7 @@ taskList.addEventListener('click', (event) => {
     const elementId = element.parentNode.attributes.id;  // ...if elem has an id
     const tasks = getFromLocalStorage('tasks');
 
+    //adding style to task test if user clicked on the text, mark it as completed
     if(element.classList[1] === 'one-task' ) {
         console.log('it is a task!');
         element.parentNode.querySelector(".one-task").classList.toggle('checked');
@@ -141,11 +144,32 @@ taskList.addEventListener('click', (event) => {
             });
         } else if(elementAction.value === 'edit'){
             console.log('lets edit...');
+            modalEditTask.classList.add('show');
+            modalEditTask.style.display = 'block';
+            // show in modal window our existing task
+            editTaskForm['body'].value = element.parentNode.parentNode.innerText;  
+            editTaskForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+            
+                const body = editTaskForm['body'].value;
+                console.log('body', body);
+                tasks.forEach((task,index) => {
+                    if(task.taskId === elementId.value) {
+                        task.body = body;
+                        console.log(task);
+                        saveToLocalStorage('tasks', tasks);
+                        console.log(tasks);
+                        renderTasks(tasks);
+                        
+                    }
+                })
+                
+            })                        
         }
-        
          
     }
     saveToLocalStorage('tasks', tasks);
+    
 })
 
 function changeNavbarContent(value) {
@@ -295,6 +319,7 @@ addTaskForm.addEventListener('submit', function(event) {
         renderTasks(tasks);
 
         addTaskForm['body'].value = '';
+        $("#modal-create-task").modal("hide");
     }
 })
 
