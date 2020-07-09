@@ -76,8 +76,12 @@ function getTaskId() {
 }
 
 function createTaskItem(task) {
-    // console.log(task);
+    console.log(task);
     let c = "";
+    if(task.completed === true) {
+        c = "checked"
+    }
+
     let taskItem = `
         <li class="list-group-item d-flex justify-content-between" id="${task.taskId}">
             <div class="col-9 one-task ${c}">
@@ -130,24 +134,26 @@ taskList.addEventListener('click', (event) => {
         });
     }
     
-    if(elementAction) {
+    if (elementAction) {
         console.log(element.parentNode.attributes.id);
         
-        if(elementAction.value === "delete") {
+        if (elementAction.value === "delete") {
             element.parentNode.parentNode.parentNode.removeChild(element.parentNode.parentNode);
 
             // need to delete from local storage
             tasks.forEach((task,index) => {
-                if(task.taskId === elementId.value) {
+                if (task.taskId === elementId.value) {
                     tasks.splice(index, 1);
                 }
             });
-        } else if(elementAction.value === 'edit'){
+        } 
+        if (elementAction.value === 'edit'){
             console.log('lets edit...');
             modalEditTask.classList.add('show');
             modalEditTask.style.display = 'block';
             // show in modal window our existing task
-            editTaskForm['body'].value = element.parentNode.parentNode.innerText;  
+            editTaskForm['body'].value = element.parentNode.parentNode.innerText;
+
             editTaskForm.addEventListener('submit', function(event) {
                 event.preventDefault();
             
@@ -158,18 +164,14 @@ taskList.addEventListener('click', (event) => {
                         task.body = body;
                         console.log(task);
                         saveToLocalStorage('tasks', tasks);
-                        console.log(tasks);
                         renderTasks(tasks);
-                        
+                        modalEditTask.style.display = 'none';
                     }
                 })
-                
             })                        
         }
-         
     }
     saveToLocalStorage('tasks', tasks);
-    
 })
 
 function changeNavbarContent(value) {
