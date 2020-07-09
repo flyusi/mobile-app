@@ -129,7 +129,8 @@ taskList.addEventListener('click', (event) => {
         // saving changes to local storage
         tasks.forEach((task) => {
             if(task.taskId === elementId.value) {
-                task.completed = task.completed ? false : true; 
+                task.completed = task.completed ? false : true;
+                saveToLocalStorage('tasks', tasks);
             }
         });
     }
@@ -144,6 +145,7 @@ taskList.addEventListener('click', (event) => {
             tasks.forEach((task,index) => {
                 if (task.taskId === elementId.value) {
                     tasks.splice(index, 1);
+                    saveToLocalStorage('tasks', tasks);
                 }
             });
         } 
@@ -171,7 +173,7 @@ taskList.addEventListener('click', (event) => {
             })                        
         }
     }
-    saveToLocalStorage('tasks', tasks);
+    // saveToLocalStorage('tasks', tasks);
 })
 
 function changeNavbarContent(value) {
